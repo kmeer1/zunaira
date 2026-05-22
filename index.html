@@ -3,223 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Beating Heart - Zunaira</title>
+    <title>Comfort & Patience</title>
     <style>
+        /* Implements the soft, elegant aesthetic from your image */
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: #000;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background-color: #a37b7b; /* The exact dusty rose/mauve background color */
+            font-family: 'Georgia', 'Times New Roman', serif; /* Elegant, classic font like the image */
+            color: #ffffff;
+            text-align: center;
+            overflow-x: hidden;
         }
 
-        /* The canvas stays in the background */
-        canvas {
-            position: absolute;
+        /* Subtle background gradient to add depth */
+        .background-overlay {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.15) 100%);
             z-index: 1;
         }
 
-        /* Fixed: Placed absolutely over the center of the canvas */
-        .content-container {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Main content container */
+        .container {
+            position: relative;
             z-index: 2;
-            pointer-events: none; 
-            text-align: center;
-            padding: 20px;
-            width: 100%;
+            max-width: 550px;
+            padding: 40px 25px;
             box-sizing: border-box;
+            animation: fadeInPage 2.5s ease-out forwards;
         }
 
-        /* The name sits on top with a glowing neon effect */
-        .name-overlay {
-            color: #ffffff;
-            font-size: 5rem;
-            font-weight: bold;
-            letter-spacing: 5px;
-            text-transform: uppercase;
+        /* The Arabic Calligraphy Style Header */
+        .arabic-header {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            font-weight: normal;
+            letter-spacing: 2px;
+            /* Creates the soft, elegant white glow from the image */
             text-shadow: 
-                0 0 10px #ff0055, 
-                0 0 20px #ff0055, 
-                0 0 40px #ff0055, 
-                0 0 80px #ff0055;
-            animation: textPulse 1s infinite alternate;
+                0 0 10px rgba(255, 255, 255, 0.8), 
+                0 0 20px rgba(255, 255, 255, 0.5), 
+                0 0 30px rgba(255, 255, 255, 0.3);
+            user-select: none;
         }
 
-        /* Sleek, romantic quote styling */
-        .quote-overlay {
-            margin-top: 25px;
-            color: #ffe6ee;
-            font-size: 1.25rem;
-            font-style: italic;
-            max-width: 450px;
-            line-height: 1.6;
-            text-shadow: 0 0 8px rgba(255, 0, 85, 0.8);
-            opacity: 0;
-            animation: fadeInQuote 2s ease-out forwards;
-            animation-delay: 0.5s;
+        /* The quote text styling matching the typography in the image */
+        .quote-text {
+            font-size: 1.45rem;
+            line-height: 1.8;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.5s ease;
         }
 
-        @keyframes textPulse {
-            from { transform: scale(1); opacity: 0.9; }
-            to { transform: scale(1.05); opacity: 1; }
-        }
-
-        @keyframes fadeInQuote {
-            from { opacity: 0; transform: translateY(10px); }
+        /* Soft fade-in animation when loading the page */
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive adjustments for mobile screens */
+        /* Mobile responsiveness adjustments */
         @media (max-width: 600px) {
-            .name-overlay { font-size: 3rem; letter-spacing: 3px; }
-            .quote-overlay { font-size: 1rem; max-width: 280px; }
+            .arabic-header { font-size: 3.5rem; margin-bottom: 1.5rem; }
+            .quote-text { font-size: 1.2rem; line-height: 1.7; max-width: 90%; margin: 0 auto; }
         }
     </style>
 </head>
 <body>
 
-    <div class="content-container">
-        <div class="name-overlay">ZUNAIRA</div>
-        <div class="quote-overlay" id="dailyQuote">Loading your daily message...</div>
+    <div class="background-overlay"></div>
+
+    <div class="container">
+        <div class="arabic-header">يَا الله</div>
+        
+        <p class="quote-text" id="comfortQuote">Loading comfort...</p>
     </div>
 
-    <canvas id="heartCanvas"></canvas>
-
     <script>
-        // --- DAILY QUOTES ARRAY ---
+      // --- COMFORTING & REASSURING QURANIC QUOTES ARRAY (100 VERSES) ---
         const quotes = [
             "“And We created you in pairs.” — Surah An-Naba (78:8)",
-            "Every day is a step closer to our 'Insha'Allah' becoming our 'Alhamdulillah.'",
-            "You are my answered prayer, even from the days I didn't know what to ask for.",
-            "Counting down the days until our forevers begin under one roof.",
-            "In a crowd of thousands, my heart will always look for you.",
-            "May Allah protect the bond we are building, and bless our future together.",
-            "You are the peace (Sakeenah) my heart always hoped to find.",
-            "Loved you yesterday, love you still, always have, always will.",
-            "Like a prayer whispered in the dark, you brought light into my world.",
-            "To the one who holds my future: I am so incredibly grateful for you.",
-            "They say marriages are made in heaven, and my heart knows it's true with you.",
-            "You are my favorite thought in a day full of chaos.",
-            "Looking forward to a lifetime of growing older and closer with you, Insha'Allah."
+            "“Verily, with hardship comes ease.” — Surah Ash-Sharh (94:6)",
+            "“So remember Me; I will remember you.” — Surah Al-Baqarah (2:152)",
+            "“And put your trust in Allah, and sufficient is Allah as a Disposer of affairs.” — Surah An-Nisa (4:81)",
+            "“My mercy encompasses all things.” — Surah Al-A'raf (7:156)",
+            "“Unquestionably, by the remembrance of Allah do hearts find rest.” — Surah Ar-Ra'd (13:28)",
+            "“And Allah is the best of planners.” — Surah Al-Anfal (8:30)",
+            "“And He found you lost and guided you.” — Surah Ad-Duha (93:7)",
+            "“And ever is your Lord, Seeing.” — Surah Al-Furqan (25:20)",
+            "“He knows what is within the heavens and earth and knows what you conceal and what you declare.” — Surah At-Taghabun (64:4)",
+            "“And put your trust in the Living One who does not die.” — Surah Al-Furqan (25:58)",
+            "“And speak to people good words.” — Surah Al-Baqarah (2:83)",
+            "“And your Lord is going to give you, and you will be satisfied.” — Surah Ad-Duha (93:5)",
+            "“Did He not find you an orphan and give [you] refuge?” — Surah Ad-Duha (93:6)",
+            "“Is not Allah sufficient for His servant?” — Surah Az-Zumar (39:36)",
+            "“And perfectly fulfill the covenant of Allah when you have taken it.” — Surah An-Nahl (16:91)",
+            "“Our Lord, pour upon us patience and let us die as Muslims.” — Surah Al-A'raf (7:126)",
+            "“And seek help through patience and prayer.” — Surah Al-Baqarah (2:45)",
+            "“Indeed, Allah is with the patient.” — Surah Al-Baqarah (2:153)",
+            "“And Allah loves the steadfast.” — Surah Ali 'Imran (3:146)",
+            "“And be patient, for indeed, Allah does not allow to be lost the reward of those who do good.” — Surah Hud (11:115)",
+            "“So be patient. Indeed, the promise of Allah is truth.” — Surah Ar-Rum (30:60)",
+            "“And rely upon Allah ; and sufficient is Allah as a Disposer of affairs.” — Surah Al-Ahzab (33:3)",
+            "“And whoever fears Allah - He will make for him a way out.” — Surah At-Talaq (65:2)",
+            "“And He will provide for him from where he does not expect.” — Surah At-Talaq (65:3)",
+            "“And whoever relies upon Allah - then He is sufficient for him.” — Surah At-Talaq (65:3)",
+            "“Indeed, Allah will accomplish His purpose.” — Surah At-Talaq (65:3)",
+            "“Allah does not charge a soul except [with that within] its capacity.” — Surah Al-Baqarah (2:286)",
+            "“Allah intends for you ease and does not intend for you hardship.” — Surah Al-Baqarah (2:185)",
+            "“And hold firmly to the rope of Allah all together and do not become divided.” — Surah Ali 'Imran (3:103)",
+            "“And view the grace of your Lord.” — Surah Al-Baqarah (2:268)",
+            "“Indeed, the mercy of Allah is near to the doers of good.” — Surah Al-A'raf (7:56)",
+            "“Say, 'In the bounty of Allah and in His mercy - in that let them rejoice.'” — Surah Yunus (10:58)",
+            "“And your Lord is the Forgiving, Full of Mercy.” — Surah Al-Kahf (18:58)",
+            "“Indeed, your Lord is vast in forgiveness.” — Surah An-Najm (53:32)",
+            "“The Lord of the heavens and the earth and whatever is between them, the Exalted in Might, the Perpetual Forgiver.” — Surah Sad (38:66)",
+            "“Inform My servants that it is I who am the Forgiving, the Merciful.” — Surah Al-Hijr (15:49)",
+            "“And He is the Forgiving, the Affectionate.” — Surah Al-Buruj (85:14)",
+            "“He is the Lord of the East and the West; there is no deity except Him, so take Him as a Disposer of affairs.” — Surah Al-Muzzammil (73:9)",
+            "“And prescribe for us in this world [that which is] good and [also] in the Hereafter.” — Surah Al-A'raf (7:156)",
+            "“And my success is not but through Allah.” — Surah Hud (11:88)",
+            "“Upon Him I have relied, and to Him I return.” — Surah Hud (11:88)",
+            "“Sufficient for me is Allah ; there is no deity except Him.” — Surah At-Tawbah (9:129)",
+            "“On Him I have relied, and He is the Lord of the Great Throne.” — Surah At-Tawbah (9:129)",
+            "“And whoever submits his face to Allah while he is a doer of good - then he has grasped the most trustworthy handhold.” — Surah Luqman (31:22)",
+            "“And to Allah belongs the outcome of [all] matters.” — Surah Luqman (31:22)",
+            "“And keep yourself patient with those who call upon their Lord in the morning and the afternoon.” — Surah Al-Kahf (18:28)",
+            "“And cause us to die with the righteous.” — Surah Ali 'Imran (3:193)",
+            "“Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance.” — Surah Al-Kahf (18:10)",
+            "“My Lord, expand for me my breast [with assurance].” — Surah Taha (20:25)",
+            "“And ease for me my task.” — Surah Taha (20:26)",
+            "“And My Lord is ever to me most Gracious.” — Surah Maryam (19:47)",
+            "“And peace is on me the day I was born and the day I will die.” — Surah Maryam (19:33)",
+            "“Fear not. Indeed, I am with you; I hear and I see.” — Surah Taha (20:46)",
+            "“Indeed, my Lord is near and responsive.” — Surah Hud (11:61)",
+            "“And your Lord is Witness over all things.” — Surah Saba (34:21)",
+            "“And Allah is Overlooking all things.” — Surah Al-Ahzab (33:52)",
+            "“Does he not know that Allah sees?” — Surah Al-'Alaq (96:14)",
+            "“And assume trust in Allah. Indeed, Allah loves those who rely [upon Him].” — Surah Ali 'Imran (3:159)",
+            "“And guide us to the straight path.” — Surah Al-Fatihah (1:6)",
+            "“Praise to Allah, Lord of the worlds.” — Surah Al-Fatihah (1:2)",
+            "“The Most Merciful, the Only Merciful.” — Surah Al-Fatihah (1:3)",
+            "“It is You we worship and You we ask for help.” — Surah Al-Fatihah (1:5)",
+            "“And do not weaken and do not grieve, and you will be superior if you are [true] believers.” — Surah Ali 'Imran (3:139)",
+            "“Our Lord, perfect for us our light and forgive us. Indeed, You are over all things competent.” — Surah At-Tahrim (66:8)",
+            "“Indeed, the promise of Allah is truth.” — Surah Luqman (31:33)",
+            "“And Allah invites to the Home of Peace and guides whom He wills to a straight path.” — Surah Yunus (10:25)",
+            "“There is no duplicate to His grace.” — Surah Ash-Shura (42:11)",
+            "“And He is the Hearing, the Seeing.” — Surah Ash-Shura (42:11)",
+            "“His is the management of the heavens and the earth.” — Surah Ash-Shura (42:12)",
+            "“He extends provision for whom He wills and restricts [it].” — Surah Ash-Shura (42:12)",
+            "“Indeed, He is of all things Knowing.” — Surah Ash-Shura (42:12)",
+            "“And He is the One who accepts repentance from His servants.” — Surah Ash-Shura (42:25)",
+            "“And He pardons misdeeds, and He knows what you do.” — Surah Ash-Shura (42:25)",
+            "“And He answers [the supplication of] those who have believed and done righteous deeds.” — Surah Ash-Shura (42:26)",
+            "“And He increases them from His bounty.” — Surah Ash-Shura (42:26)",
+            "“And He is the One who sends down rain after they have despaired.” — Surah Ash-Shura (42:28)",
+            "“And He spreads His mercy. And He is the Protector, the Praiseworthy.” — Surah Ash-Shura (42:28)",
+            "“Whatever you have been given of things is but enjoyment of worldly life.” — Surah Ash-Shura (42:36)",
+            "“But what is with Allah is better and more lasting for those who have believed.” — Surah Ash-Shura (42:36)",
+            "“And upon their Lord they rely.” — Surah Ash-Shura (42:36)",
+            "“And those who, when tyranny strikes them, they defend themselves.” — Surah Ash-Shura (42:39)",
+            "“And the retribution for an evil is an equal evil action.” — Surah Ash-Shura (42:40)",
+            "“But whoever pardons and makes reconciliation - his reward is [due] from Allah.” — Surah Ash-Shura (42:40)",
+            "“Indeed, He does not like wrongdoers.” — Surah Ash-Shura (42:40)",
+            "“And whoever is patient and forgives - indeed, that is of the matters [requiring] determination.” — Surah Ash-Shura (42:43)",
+            "“To Allah belongs the dominion of the heavens and the earth.” — Surah Ash-Shura (42:49)",
+            "“He creates what He wills.” — Surah Ash-Shura (42:49)",
+            "“He gives to whom He wills female [children], and He gives to whom He wills males.” — Surah Ash-Shura (42:49)",
+            "“Or He makes them [both] males and females, and He renders whom He wills barren.” — Surah Ash-Shura (42:50)",
+            "“Indeed, He is Knowing and Competent.” — Surah Ash-Shura (42:50)",
+            "“And thus We have revealed to you an inspiration of Our command.” — Surah Ash-Shura (42:52)",
+            "“You did not know what is the Book or [what is] faith.” — Surah Ash-Shura (42:52)",
+            "“But We have made it a light by which We guide whom We will of Our servants.” — Surah Ash-Shura (42:52)",
+            "“And indeed, you guide to a straight path.” — Surah Ash-Shura (42:52)",
+            "“The path of Allah, to whom belongs whatever is in the heavens and whatever is on the earth.” — Surah Ash-Shura (42:53)",
+            "“Unquestionably, to Allah do [all] matters evolve.” — Surah Ash-Shura (42:53)",
+            "“And when I am ill, it is He who cures me.” — Surah Ash-Shu'ara (26:80)",
+            "“Except him who brings to Allah a clean heart.” — Surah Ash-Shu'ara (26:89)",
+            "“Is the reward for good [anything] but good?” — Surah Ar-Rahman (55:60)"
         ];
-
-        function setDailyQuote() {
+        // Unique daily math selector based on calendar date
+        function displayDailyQuote() {
             const today = new Date();
-            const dateIdentifier = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
-            const quoteIndex = dateIdentifier % quotes.length;
-            document.getElementById('dailyQuote').innerText = quotes[quoteIndex];
+            const dateID = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
+            const index = dateID % quotes.length;
+            document.getElementById('comfortQuote').innerText = quotes[index];
         }
 
-        setDailyQuote();
-
-        // --- CANVAS HEART CODE ---
-        const canvas = document.getElementById('heartCanvas');
-        const ctx = canvas.getContext('2d');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        const particleCount = 700; 
-        const particles = [];
-
-        function getHeartPoint(t) {
-            return {
-                x: 16 * Math.pow(Math.sin(t), 3),
-                y: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t))
-            };
-        }
-
-        for (let i = 0; i < particleCount; i++) {
-            const t = Math.PI * 2 * Math.random();
-            const point = getHeartPoint(t);
-            const scale = 16 + Math.random() * 5; 
-
-            particles.push({
-                x: width / 2,
-                y: height / 2,
-                targetX: width / 2 + point.x * scale,
-                targetY: height / 2 + point.y * scale,
-                vx: 0,
-                vy: 0,
-                speed: 4 + Math.random() * 3,
-                friction: 0.9 + Math.random() * 0.05,
-                color: `rgba(255, ${Math.floor(Math.random() * 40)}, ${70 + Math.floor(Math.random() * 60)}, ${0.3 + Math.random() * 0.5})`,
-                size: 1 + Math.random() * 2,
-                trace: []
-            });
-        }
-
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-            ctx.fillRect(0, 0, width, height);
-
-            const time = Date.now() * 0.003;
-            const pulseFactor = Math.sin(time) * Math.cos(time * 0.5) * 0.4 + 1.0;
-
-            particles.forEach(p => {
-                const originalX = p.targetX - width / 2;
-                const originalY = p.targetY - height / 2;
-                
-                const currentTargetX = width / 2 + originalX * pulseFactor;
-                const currentTargetY = height / 2 + originalY * pulseFactor;
-
-                const dx = currentTargetX - p.x;
-                const dy = currentTargetY - p.y;
-                
-                p.vx += (dx / p.speed) * 0.1;
-                p.vy += (dy / p.speed) * 0.1;
-
-                p.vx *= p.friction;
-                p.vy *= p.friction;
-
-                p.vx += (Math.random() - 0.5) * 0.5;
-                p.vy += (Math.random() - 0.5) * 0.5;
-
-                p.x += p.vx;
-                p.y += p.vy;
-
-                p.trace.push({ x: p.x, y: p.y });
-                if (p.trace.length > 4) p.trace.shift();
-
-                ctx.beginPath();
-                if (p.trace.length > 1) {
-                    ctx.moveTo(p.trace[0].x, p.trace[0].y);
-                    for (let j = 1; j < p.trace.length; j++) {
-                        ctx.lineTo(p.trace[j].x, p.trace[j].y);
-                    }
-                } else {
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                }
-                ctx.strokeStyle = p.color;
-                ctx.lineWidth = p.size;
-                ctx.stroke();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', () => {
-            const oldWidth = width;
-            const oldHeight = height;
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            
-            particles.forEach(p => {
-                p.targetX = width / 2 + (p.targetX - oldWidth / 2);
-                p.targetY = height / 2 + (p.targetY - oldHeight / 2);
-            });
-        });
-
-        animate();
+        // Execute immediately
+        displayDailyQuote();
     </script>
 </body>
 </html>
