@@ -10,7 +10,6 @@
             overflow: hidden;
             background-color: #000;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -25,16 +24,19 @@
             z-index: 1;
         }
 
-        /* Container to stack name and quote vertically */
+        /* Fixed: Placed absolutely over the center of the canvas */
         .content-container {
+            position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            pointer-events: none; /* Allows clicks to pass through if needed */
+            pointer-events: none; 
             text-align: center;
             padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* The name sits on top with a glowing neon effect */
@@ -60,7 +62,7 @@
             font-style: italic;
             max-width: 450px;
             line-height: 1.6;
-            text-shadow: 0 0 8px rgba(255, 0, 85, 0.6);
+            text-shadow: 0 0 8px rgba(255, 0, 85, 0.8);
             opacity: 0;
             animation: fadeInQuote 2s ease-out forwards;
             animation-delay: 0.5s;
@@ -94,7 +96,6 @@
 
     <script>
         // --- DAILY QUOTES ARRAY ---
-        // A curated list of highly romantic, culturally respectful, and future-focused quotes
         const quotes = [
             "“And We created you in pairs.” — Surah An-Naba (78:8)",
             "Every day is a step closer to our 'Insha'Allah' becoming our 'Alhamdulillah.'",
@@ -111,21 +112,16 @@
             "Looking forward to a lifetime of growing older and closer with you, Insha'Allah."
         ];
 
-        // Function to select a quote based on the current calendar day
         function setDailyQuote() {
             const today = new Date();
-            // Create a unique number using Year, Month, and Day
             const dateIdentifier = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
-            // Use modulo to cycle through quotes array perfectly every day
             const quoteIndex = dateIdentifier % quotes.length;
             document.getElementById('dailyQuote').innerText = quotes[quoteIndex];
         }
 
-        // Run the quote picker immediately
         setDailyQuote();
 
-
-        // --- YOUR ORIGINAL CANVAS HEART CODE ---
+        // --- CANVAS HEART CODE ---
         const canvas = document.getElementById('heartCanvas');
         const ctx = canvas.getContext('2d');
 
