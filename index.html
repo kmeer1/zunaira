@@ -3,10 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zunaira | My Portfolio</title> 
-</head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Beating Heart - Zunaira</title>
     <style>
         body {
@@ -14,6 +10,7 @@
             overflow: hidden;
             background-color: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -28,48 +25,114 @@
             z-index: 1;
         }
 
+        /* Container to stack name and quote vertically */
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            pointer-events: none; /* Allows clicks to pass through if needed */
+            text-align: center;
+            padding: 20px;
+        }
+
         /* The name sits on top with a glowing neon effect */
         .name-overlay {
-            position: relative;
-            z-index: 2;
             color: #ffffff;
             font-size: 5rem;
             font-weight: bold;
             letter-spacing: 5px;
             text-transform: uppercase;
-            /* Creates a red/pink neon glow */
             text-shadow: 
                 0 0 10px #ff0055, 
                 0 0 20px #ff0055, 
                 0 0 40px #ff0055, 
                 0 0 80px #ff0055;
-            /* Prevents the text from interfering with any mouse interactions if you add them later */
-            pointer-events: none; 
-            
-            /* Optional: Add a subtle pulsing animation to the text to match the heart */
             animation: textPulse 1s infinite alternate;
+        }
+
+        /* Sleek, romantic quote styling */
+        .quote-overlay {
+            margin-top: 25px;
+            color: #ffe6ee;
+            font-size: 1.25rem;
+            font-style: italic;
+            max-width: 450px;
+            line-height: 1.6;
+            text-shadow: 0 0 8px rgba(255, 0, 85, 0.6);
+            opacity: 0;
+            animation: fadeInQuote 2s ease-out forwards;
+            animation-delay: 0.5s;
         }
 
         @keyframes textPulse {
             from { transform: scale(1); opacity: 0.9; }
             to { transform: scale(1.05); opacity: 1; }
         }
+
+        @keyframes fadeInQuote {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments for mobile screens */
+        @media (max-width: 600px) {
+            .name-overlay { font-size: 3rem; letter-spacing: 3px; }
+            .quote-overlay { font-size: 1rem; max-width: 280px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="name-overlay">ZUNAIRA</div>
+    <div class="content-container">
+        <div class="name-overlay">ZUNAIRA</div>
+        <div class="quote-overlay" id="dailyQuote">Loading your daily message...</div>
+    </div>
 
     <canvas id="heartCanvas"></canvas>
 
     <script>
+        // --- DAILY QUOTES ARRAY ---
+        // A curated list of highly romantic, culturally respectful, and future-focused quotes
+        const quotes = [
+            "“And We created you in pairs.” — Surah An-Naba (78:8)",
+            "Every day is a step closer to our 'Insha'Allah' becoming our 'Alhamdulillah.'",
+            "You are my answered prayer, even from the days I didn't know what to ask for.",
+            "Counting down the days until our forevers begin under one roof.",
+            "In a crowd of thousands, my heart will always look for you.",
+            "May Allah protect the bond we are building, and bless our future together.",
+            "You are the peace (Sakeenah) my heart always hoped to find.",
+            "Loved you yesterday, love you still, always have, always will.",
+            "Like a prayer whispered in the dark, you brought light into my world.",
+            "To the one who holds my future: I am so incredibly grateful for you.",
+            "They say marriages are made in heaven, and my heart knows it's true with you.",
+            "You are my favorite thought in a day full of chaos.",
+            "Looking forward to a lifetime of growing older and closer with you, Insha'Allah."
+        ];
+
+        // Function to select a quote based on the current calendar day
+        function setDailyQuote() {
+            const today = new Date();
+            // Create a unique number using Year, Month, and Day
+            const dateIdentifier = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
+            // Use modulo to cycle through quotes array perfectly every day
+            const quoteIndex = dateIdentifier % quotes.length;
+            document.getElementById('dailyQuote').innerText = quotes[quoteIndex];
+        }
+
+        // Run the quote picker immediately
+        setDailyQuote();
+
+
+        // --- YOUR ORIGINAL CANVAS HEART CODE ---
         const canvas = document.getElementById('heartCanvas');
         const ctx = canvas.getContext('2d');
 
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
 
-        const particleCount = 700; // Increased slightly for a denser heart
+        const particleCount = 700; 
         const particles = [];
 
         function getHeartPoint(t) {
@@ -82,8 +145,6 @@
         for (let i = 0; i < particleCount; i++) {
             const t = Math.PI * 2 * Math.random();
             const point = getHeartPoint(t);
-            
-            // I increased the scale slightly (from 12 to 16) so the heart wraps nicely around the text
             const scale = 16 + Math.random() * 5; 
 
             particles.push({
